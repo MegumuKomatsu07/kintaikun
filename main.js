@@ -5,6 +5,12 @@ const jobStart = 6
 /**業務終了 */
 const jobEnd = 7
 
+/**離席・休憩時間 */
+const restTimeWidth = 8
+
+/**休憩 */
+const restIndex = 44
+
 /**シート名 */
 const user = "社員一覧"
 
@@ -43,11 +49,20 @@ function doPost(e) {
 
   const attendance = text.includes("【出勤】")
   const leaving = text.includes("【退勤】")
-  const flg = employeSheet ? (attendance === leaving) ? 0 : 1 : 0
+  const leaveSeat = text.includes("【離席】")
+  const rest = text.includes("【休憩】")
+  const sitDown = text.includes("【着席】")
 
-  if (flg) {
+  const startFlg = employeSheet ? attendance ? 1 : 0 : 0
+  const endFlg = employeSheet ? leaving ? 1 : 0 : 0
+  const restFlg = employeSheet ? rest || leaveSeat || sitDown ? 1 : 0 : 0
+
+  if (startFlg) {
     setTime(jobStart, attendance, year, month, time, day, employeSheet)
+  } else if (endFlg) {
     setTime(jobEnd, leaving, year, month, time, day, employeSheet)
+  } else if (restFlg) {
+    setRest(restIndex, year, month, time, day, employeSheet)
   } else {
     logTime(time, month, day, text)
   }
@@ -69,6 +84,33 @@ function setTime(index, flg, year, month, time, day, user) {
   }
 }
 
+function setRest(index, year, month, time_1, day, user) {
+
+  const userSheet = SpreadsheetApp.openByUrl(user[2])
+  const monthSheet = userSheet.getSheetByName(`${year}.${month}`)
+  const dspTimeList = monthSheet.getRange(index, 4 + Number(day), monthSheet.getLastRow()).getDisplayValues().filter(String).flat()
+
+  if (!dspTimeList.includes(time_1)) {
+
+    const setTimeIndex = monthSheet.getRange(index, 4 + Number(day), monthSheet.getLastRow()).getValues().filter(String).length + index
+    monthSheet.getRange(setTimeIndex, 4 + Number(day)).setValue(time_1)
+
+    const getIndex = setTimeIndex - index + 1
+    const restTimeList = monthSheet.getRange(index, 4 + Number(day), getIndex, 1).getValues()
+
+    let restTime = 0
+    for (let i = 0, j = 1; i < restTimeList.length; i += 2, j += 2) {
+      if (restTimeList[j] && restTimeList[i]) {
+        const diff = restTimeList[j][0] - restTimeList[i][0];
+        restTime = diff + restTime
+
+      }
+    }
+    const hour = Math.floor(restTime / 1000 / 60 / 60);
+    const minute = Math.floor(restTime / 1000 / 60) % 60;
+    monthSheet.getRange(restTimeWidth, 4 + Number(day)).setValue(hour + ":" + minute + ":00")
+  }
+}
 function logTime(time, month, day, text) {
 
   const userSheet = containerSheet.getSheetByName("log");
