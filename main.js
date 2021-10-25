@@ -9,7 +9,7 @@ const jobEnd = 7
 const restTimeWidth = 8
 
 /**休憩 */
-const restIndex = 44
+const restIndex = 70
 
 /**シート名 */
 const user = "社員一覧"
