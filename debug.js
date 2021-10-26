@@ -1,12 +1,17 @@
-// function test(e) {
-//   var startTime = new Date();
-//   // Utilities.sleep(3000);
-
-//   //日付を取得
+// function testdoPost() {
 //   const timeStamp = 1637485524
-//   const text = "<@U026RH5CYV9>【着席】"
-//   const userName = sarchUserName2(text);
-//   const employeSheet = sarchEmploye2(userName)
+//   const text = "<@U026RH5CYV9>【離席】"
+//   const userName = sarchUserName(text);
+//   const employeSheet = sarchEmploye(userName)
+//   const channel = "C02CF2HMB19"
+
+//   if (channel == "C02CF2HMB19") {
+//     testGeneralChannel(employeSheet, timeStamp, text)
+//   }
+// }
+
+
+// function testGeneralChannel(employeSheet, timeStamp, text) {
 
 //   const datetime = new Date(timeStamp * 1000);
 //   const year = datetime.getFullYear()

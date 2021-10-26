@@ -30,13 +30,26 @@ const rangeIndex = employeeList.getIndex()
 
 
 function doPost(e) {
-
+  // var startTime = new Date();
+  //   // Utilities.sleep(3000);
   const params = JSON.parse(e.postData.getDataAsString());
   const timeStamp = params.event.ts
   const text = params.event.text
+  const channel = params.event.channel
 
   const userName = sarchUserName(text);
   const employeSheet = sarchEmploye(userName)
+
+  if (channel == "C0137GRL4UT") {
+    generalChannel(employeSheet, timeStamp, text)
+  }
+}
+
+/**
+ * #0-1総務_勤怠チャンネル
+ */
+
+function generalChannel(employeSheet, timeStamp, text) {
 
   const datetime = new Date(timeStamp * 1000);
   const year = datetime.getFullYear()
