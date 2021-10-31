@@ -1,6 +1,6 @@
 // function testdoPost() {
-//   const timeStamp = 1637485524
-//   const text = "<@U026RH5CYV9>【離席】"
+//   const timeStamp = 1641913200
+//   const text = "<@U026RH5CYV9>【勤務表を提出】"
 //   const userName = sarchUserName(text);
 //   const employeSheet = sarchEmploye(userName)
 //   const channel = "C02CF2HMB19"
@@ -8,8 +8,46 @@
 //   if (channel == "C02CF2HMB19") {
 //     testGeneralChannel(employeSheet, timeStamp, text)
 //   }
+
+//   if (channel == "C02CF2HMB19" && text.includes("【勤務表を提出】")) {
+//     testToKurasinoChannel(employeSheet, timeStamp, text)
+//   }
+
 // }
 
+// /**
+//  * #0-0_to_kurasinoチャンネル
+//  */
+
+// function testToKurasinoChannel(employeSheet, timeStamp, text) {
+
+//   const datetime = new Date(timeStamp * 1000);
+//   datetime.setMonth(datetime.getMonth() - 1)
+//   const year = datetime.getFullYear()
+//   const month = ('0' + (datetime.getMonth() + 1)).slice(-2);
+//   const day = ('0' + datetime.getDate()).slice(-2);
+//   const hour = ('0' + datetime.getHours()).slice(-2);
+//   const minute = ('0' + datetime.getMinutes()).slice(-2);
+//   const time = hour + ":" + minute
+
+//   if (employeSheet) {
+
+//     const userSheet = SpreadsheetApp.openByUrl(employeSheet[2])
+//     var list = userSheet.getSheetByName(`${year}.${month}`)
+//     let protections = list.protect();
+//     let userList = protections.getEditors();
+//     protections.removeEditors(userList);
+//     protections.setDescription("オーナー権限");
+
+//   } else {
+//     logTime2(time, month, day, text)
+//   }
+// }
+
+
+// /**
+//  * #0-1総務_勤怠チャンネル
+//  */
 
 // function testGeneralChannel(employeSheet, timeStamp, text) {
 

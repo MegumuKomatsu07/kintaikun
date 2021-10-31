@@ -41,7 +41,10 @@ function doPost(e) {
   const employeSheet = sarchEmploye(userName)
 
   if (channel == "C0137GRL4UT") {
-    generalChannel(employeSheet, timeStamp, text)
+    kintaiChannel(employeSheet, timeStamp, text)
+  }
+  if (channel == "C0137GS99UK" && text.includes("【勤務表を提出】")) {
+    toKurasinoChannel(employeSheet, timeStamp, text)
   }
 }
 
@@ -49,7 +52,7 @@ function doPost(e) {
  * #0-1総務_勤怠チャンネル
  */
 
-function generalChannel(employeSheet, timeStamp, text) {
+function kintaiChannel(employeSheet, timeStamp, text) {
 
   const datetime = new Date(timeStamp * 1000);
   const year = datetime.getFullYear()
@@ -78,6 +81,33 @@ function generalChannel(employeSheet, timeStamp, text) {
     setRest(restIndex, year, month, time, day, employeSheet)
   } else {
     logTime(time, month, day, text)
+  }
+}
+
+/**
+ * #0-1総務_勤怠チャンネル
+ */
+
+function toKurasinoChannel(employeSheet, timeStamp, text) {
+
+  const datetime = new Date(timeStamp * 1000);
+  datetime.setMonth(datetime.getMonth() - 1)
+  const year = datetime.getFullYear()
+  const month = ('0' + (datetime.getMonth() + 1)).slice(-2);
+  const day = ('0' + datetime.getDate()).slice(-2);
+  const hour = ('0' + datetime.getHours()).slice(-2);
+  const minute = ('0' + datetime.getMinutes()).slice(-2);
+  const time = hour + ":" + minute
+
+  if (employeSheet) {
+    const userSheet = SpreadsheetApp.openByUrl(employeSheet[2])
+    var list = userSheet.getSheetByName(`${year}.${month}`)
+    let protections = list.protect();
+    let userList = protections.getEditors();
+    protections.removeEditors(userList);
+    protections.setDescription("オーナー権限");
+  } else {
+    logTime("失敗しました" + time, month, day, text)
   }
 }
 
