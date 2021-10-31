@@ -36,6 +36,7 @@ function doPost(e) {
   const timeStamp = params.event.ts
   const text = params.event.text
   const channel = params.event.channel
+  containerSheet.getSheetByName("log").getRange("F1").setValue(text)
 
   const userName = sarchUserName(text);
   const employeSheet = sarchEmploye(userName)
@@ -93,21 +94,28 @@ function toKurasinoChannel(employeSheet, timeStamp, text) {
   const datetime = new Date(timeStamp * 1000);
   datetime.setMonth(datetime.getMonth() - 1)
   const year = datetime.getFullYear()
-  const month = ('0' + (datetime.getMonth() + 1)).slice(-2);
+  const month = ('0' + (datetime.getMonth())).slice(-2);
   const day = ('0' + datetime.getDate()).slice(-2);
   const hour = ('0' + datetime.getHours()).slice(-2);
   const minute = ('0' + datetime.getMinutes()).slice(-2);
   const time = hour + ":" + minute
 
   if (employeSheet) {
+
     const userSheet = SpreadsheetApp.openByUrl(employeSheet[2])
     var list = userSheet.getSheetByName(`${year}.${month}`)
+    
+    const doc = DriveApp.getFileById(userSheet.getId())
+    access = DriveApp.Access.PRIVATE;
+    permission = DriveApp.Permission.EDIT;
+    doc.setSharing(access, permission);
+
     let protections = list.protect();
-    let userList = protections.getEditors();
-    protections.removeEditors(userList);
+    protections.removeEditors(protections.getEditors());
     protections.setDescription("オーナー権限");
+
   } else {
-    logTime("失敗しました" + time, month, day, text)
+    logTime(time, month, day, text)
   }
 }
 

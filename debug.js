@@ -1,9 +1,10 @@
 // function testdoPost() {
-//   const timeStamp = 1641913200
+//   const timeStamp = 1635675116
 //   const text = "<@U026RH5CYV9>【勤務表を提出】"
 //   const userName = sarchUserName(text);
 //   const employeSheet = sarchEmploye(userName)
 //   const channel = "C02CF2HMB19"
+//   containerSheet.getSheetByName("log").getRange("F1").setValue(text)
 
 //   if (channel == "C02CF2HMB19") {
 //     testGeneralChannel(employeSheet, timeStamp, text)
@@ -22,9 +23,8 @@
 // function testToKurasinoChannel(employeSheet, timeStamp, text) {
 
 //   const datetime = new Date(timeStamp * 1000);
-//   datetime.setMonth(datetime.getMonth() - 1)
 //   const year = datetime.getFullYear()
-//   const month = ('0' + (datetime.getMonth() + 1)).slice(-2);
+//   const month = ('0' + (datetime.getMonth())).slice(-2);
 //   const day = ('0' + datetime.getDate()).slice(-2);
 //   const hour = ('0' + datetime.getHours()).slice(-2);
 //   const minute = ('0' + datetime.getMinutes()).slice(-2);
@@ -34,10 +34,16 @@
 
 //     const userSheet = SpreadsheetApp.openByUrl(employeSheet[2])
 //     var list = userSheet.getSheetByName(`${year}.${month}`)
+
 //     let protections = list.protect();
-//     let userList = protections.getEditors();
-//     protections.removeEditors(userList);
+//     protections.removeEditors(protections.getEditors());
 //     protections.setDescription("オーナー権限");
+
+//     const doc = DriveApp.getFileById(userSheet.getId())
+//     access = DriveApp.Access.PRIVATE;
+//     permission = DriveApp.Permission.EDIT;
+//     doc.setSharing(access, permission);
+
 
 //   } else {
 //     logTime2(time, month, day, text)
@@ -83,8 +89,6 @@
 //   } else {
 //     logTime2(time, month, day, text)
 //   }
-//   var endTime = new Date();
-//   console.log(endTime - startTime + "ms");
 
 // }
 
