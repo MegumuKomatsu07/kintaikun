@@ -1,5 +1,5 @@
 // function testdoPost() {
-//   const timeStamp = 1635675116
+//   const timeStamp = 1635771572
 //   const text = "<@U026RH5CYV9>【勤務表を提出】"
 //   const userName = sarchUserName(text);
 //   const employeSheet = sarchEmploye(userName)
@@ -9,11 +9,9 @@
 //   if (channel == "C02CF2HMB19") {
 //     testGeneralChannel(employeSheet, timeStamp, text)
 //   }
-
 //   if (channel == "C02CF2HMB19" && text.includes("【勤務表を提出】")) {
 //     testToKurasinoChannel(employeSheet, timeStamp, text)
 //   }
-
 // }
 
 // /**
@@ -99,14 +97,14 @@
 //     const userSheet = SpreadsheetApp.openByUrl(user[2])
 //     let monthSheet = userSheet.getSheetByName(`${year}.${month}`)
 //     if (!monthSheet) {
-//       const template = userSheet.getSheetByName("作業表雛形")
+//       const template = SpreadsheetApp.openById("1K_PSeBuE-gx5dQcayYFee9zSYSGfBfzaM90CVf7y6eU").getSheetByName("作業表雛形")
 //       monthSheet = template.copyTo(userSheet).setName(`${year}.${month}`)
 //       const setMonth = year + "年" + month + "月"
-//       monthSheet.getRange("A4:D5").setValue(setMonth)
-//       monthSheet.getRange("AD2:AI2").setValue(user[0])
+//       monthSheet.getRange(setMonthBlock).setValue(setMonth)
+//       monthSheet.getRange(setUserBlock).setValue(user[0])
 //       console.log(setMonth)
 //     }
-//     monthSheet.getRange(index, 4 + Number(day)).setValue(time)
+//     monthSheet.getRange(index, columnNum + Number(day)).setValue(time)
 //   }
 // }
 
@@ -116,17 +114,17 @@
 //   const userSheet = SpreadsheetApp.openByUrl(user[2])
 //   const monthSheet = userSheet.getSheetByName(`${year}.${month}`)
 
-//   const dspTimeList = monthSheet.getRange(index, 4 + Number(day), monthSheet.getLastRow()).getDisplayValues().filter(String).flat()
+//   const dspTimeList = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow()).getDisplayValues().filter(String).flat()
 
 //   if (!dspTimeList.includes(time_1)) {
 
-//     const setTimeIndex = monthSheet.getRange(index, 4 + Number(day), monthSheet.getLastRow()).getValues().filter(String).length + index
+//     const setTimeIndex = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow()).getValues().filter(String).length + index
 
-//     monthSheet.getRange(setTimeIndex, 4 + Number(day)).setValue(time_1)
+//     monthSheet.getRange(setTimeIndex, columnNum + Number(day)).setValue(time_1)
 
 
 //     const getIndex = setTimeIndex - index + 1
-//     const restTimeList = monthSheet.getRange(index, 4 + Number(day), getIndex, 1).getValues()
+//     const restTimeList = monthSheet.getRange(index, columnNum + Number(day), getIndex, 1).getValues()
 //     console.log(restTimeList)
 
 //     let restTime = 0
@@ -141,7 +139,7 @@
 //     const minute = Math.floor(restTime / 1000 / 60) % 60;
 
 //     console.log(hour + ":" + minute)
-//     monthSheet.getRange(restTimeWidth, 4 + Number(day)).setValue(hour + ":" + minute + ":00")
+//     monthSheet.getRange(restTimeWidth, columnNum + Number(day)).setValue(hour + ":" + minute + ":00")
 //   }
 
 // }

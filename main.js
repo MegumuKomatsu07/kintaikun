@@ -1,4 +1,7 @@
 
+/**スプシ */
+const columnNum = 5
+
 /**業務開始 */
 const jobStart = 6
 
@@ -18,7 +21,7 @@ const user = "社員一覧"
 const setMonthBlock = "A4:D5"
 
 /**シート名 */
-const setUserBlock = "AD2:AI2"
+const setUserBlock = "AE2:AJ2"
 
 /**スプシ */
 const containerSheet = SpreadsheetApp.getActiveSpreadsheet()
@@ -36,7 +39,6 @@ function doPost(e) {
   const timeStamp = params.event.ts
   const text = params.event.text
   const channel = params.event.channel
-  containerSheet.getSheetByName("log").getRange("F1").setValue(text)
 
   const userName = sarchUserName(text);
   const employeSheet = sarchEmploye(userName)
@@ -92,7 +94,6 @@ function kintaiChannel(employeSheet, timeStamp, text) {
 function toKurasinoChannel(employeSheet, timeStamp, text) {
 
   const datetime = new Date(timeStamp * 1000);
-  datetime.setMonth(datetime.getMonth() - 1)
   const year = datetime.getFullYear()
   const month = ('0' + (datetime.getMonth())).slice(-2);
   const day = ('0' + datetime.getDate()).slice(-2);
@@ -104,7 +105,7 @@ function toKurasinoChannel(employeSheet, timeStamp, text) {
 
     const userSheet = SpreadsheetApp.openByUrl(employeSheet[2])
     var list = userSheet.getSheetByName(`${year}.${month}`)
-    
+
     const doc = DriveApp.getFileById(userSheet.getId())
     access = DriveApp.Access.PRIVATE;
     permission = DriveApp.Permission.EDIT;
@@ -126,12 +127,12 @@ function setTime(index, flg, year, month, time, day, user) {
     const userSheet = SpreadsheetApp.openByUrl(user[2])
     var monthSheet = userSheet.getSheetByName(`${year}.${month}`)
     if (!monthSheet) {
-      const template = userSheet.getSheetByName("作業表雛形")
+      const template = SpreadsheetApp.openById("1K_PSeBuE-gx5dQcayYFee9zSYSGfBfzaM90CVf7y6eU").getSheetByName("作業表雛形")
       monthSheet = template.copyTo(userSheet).setName(`${year}.${month}`)
       monthSheet.getRange(setMonthBlock).setValue(setMonth)
       monthSheet.getRange(setUserBlock).setValue(user[0])
     }
-    monthSheet.getRange(index, 4 + Number(day)).setValue(time)
+    monthSheet.getRange(index, columnNum + Number(day)).setValue(time)
   }
 }
 
@@ -139,15 +140,15 @@ function setRest(index, year, month, time_1, day, user) {
 
   const userSheet = SpreadsheetApp.openByUrl(user[2])
   const monthSheet = userSheet.getSheetByName(`${year}.${month}`)
-  const dspTimeList = monthSheet.getRange(index, 4 + Number(day), monthSheet.getLastRow()).getDisplayValues().filter(String).flat()
+  const dspTimeList = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow()).getDisplayValues().filter(String).flat()
 
   if (!dspTimeList.includes(time_1)) {
 
-    const setTimeIndex = monthSheet.getRange(index, 4 + Number(day), monthSheet.getLastRow()).getValues().filter(String).length + index
-    monthSheet.getRange(setTimeIndex, 4 + Number(day)).setValue(time_1)
+    const setTimeIndex = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow()).getValues().filter(String).length + index
+    monthSheet.getRange(setTimeIndex, columnNum + Number(day)).setValue(time_1)
 
     const getIndex = setTimeIndex - index + 1
-    const restTimeList = monthSheet.getRange(index, 4 + Number(day), getIndex, 1).getValues()
+    const restTimeList = monthSheet.getRange(index, columnNum + Number(day), getIndex, 1).getValues()
 
     let restTime = 0
     for (let i = 0, j = 1; i < restTimeList.length; i += 2, j += 2) {
@@ -159,7 +160,7 @@ function setRest(index, year, month, time_1, day, user) {
     }
     const hour = Math.floor(restTime / 1000 / 60 / 60);
     const minute = Math.floor(restTime / 1000 / 60) % 60;
-    monthSheet.getRange(restTimeWidth, 4 + Number(day)).setValue(hour + ":" + minute + ":00")
+    monthSheet.getRange(restTimeWidth, columnNum + Number(day)).setValue(hour + ":" + minute + ":00")
   }
 }
 function logTime(time, month, day, text) {
