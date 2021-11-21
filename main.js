@@ -94,8 +94,9 @@ function kintaiChannel(employeSheet, timeStamp, text) {
 function toKurasinoChannel(employeSheet, timeStamp, text) {
 
   const datetime = new Date(timeStamp * 1000);
+  datetime.setMonth(datetime.getMonth() - 1)
   const year = datetime.getFullYear()
-  const month = ('0' + (datetime.getMonth())).slice(-2);
+  const month = ('0' + (datetime.getMonth() + 1)).slice(-2);
   const day = ('0' + datetime.getDate()).slice(-2);
   const hour = ('0' + datetime.getHours()).slice(-2);
   const minute = ('0' + datetime.getMinutes()).slice(-2);
@@ -104,7 +105,7 @@ function toKurasinoChannel(employeSheet, timeStamp, text) {
   if (employeSheet) {
 
     const userSheet = SpreadsheetApp.openByUrl(employeSheet[2])
-    var list = userSheet.getSheetByName(`${year}.${month}`)
+    let list = userSheet.getSheetByName(`${year}.${month}`)
 
     const doc = DriveApp.getFileById(userSheet.getId())
     access = DriveApp.Access.PRIVATE;
@@ -125,9 +126,10 @@ function setTime(index, flg, year, month, time, day, user) {
 
   if (flg) {
     const userSheet = SpreadsheetApp.openByUrl(user[2])
-    var monthSheet = userSheet.getSheetByName(`${year}.${month}`)
+    let monthSheet = userSheet.getSheetByName(`${year}.${month}`)
     if (!monthSheet) {
-      const template = SpreadsheetApp.openById("1K_PSeBuE-gx5dQcayYFee9zSYSGfBfzaM90CVf7y6eU").getSheetByName("作業表雛形")
+      const ss = SpreadsheetApp.openById("1K_PSeBuE-gx5dQcayYFee9zSYSGfBfzaM90CVf7y6eU")
+      const template = ss.getSheetByName("作業表雛形")
       monthSheet = template.copyTo(userSheet).setName(`${year}.${month}`)
       monthSheet.getRange(setMonthBlock).setValue(setMonth)
       monthSheet.getRange(setUserBlock).setValue(user[0])
@@ -138,15 +140,15 @@ function setTime(index, flg, year, month, time, day, user) {
 
 function setRest(index, year, month, time_1, day, user) {
 
+  // 個人スプレッドシートURL
   const userSheet = SpreadsheetApp.openByUrl(user[2])
   const monthSheet = userSheet.getSheetByName(`${year}.${month}`)
-  const dspTimeList = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow()).getDisplayValues().filter(String).flat()
-
-  if (!dspTimeList.includes(time_1)) {
-
-    const setTimeIndex = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow()).getValues().filter(String).length + index
-    monthSheet.getRange(setTimeIndex, columnNum + Number(day)).setValue(time_1)
-
+  const restTimeValues = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow())
+  let dspTimeList = restTimeValues.getDisplayValues().filter(String).flat()
+  const setTimeIndex = restTimeValues.getValues().filter(String).length + index
+  const setVal = dspTimeList.indexOf(time_1) == -1 ? dspTimeList.push(monthSheet.getRange(setTimeIndex, columnNum + Number(day)).setValue(time_1).getDisplayValue()) : false
+  //時間をセットした場合true・計算する
+  if (setVal) {
     const getIndex = setTimeIndex - index + 1
     const restTimeList = monthSheet.getRange(index, columnNum + Number(day), getIndex, 1).getValues()
 

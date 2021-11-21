@@ -1,10 +1,10 @@
 // function testdoPost() {
-//   const timeStamp = 1635771572
+//   const timeStamp = 1638284400
 //   const text = "<@U026RH5CYV9>【勤務表を提出】"
 //   const userName = sarchUserName(text);
 //   const employeSheet = sarchEmploye(userName)
 //   const channel = "C02CF2HMB19"
-//   containerSheet.getSheetByName("log").getRange("F1").setValue(text)
+
 
 //   if (channel == "C02CF2HMB19") {
 //     testGeneralChannel(employeSheet, timeStamp, text)
@@ -21,8 +21,10 @@
 // function testToKurasinoChannel(employeSheet, timeStamp, text) {
 
 //   const datetime = new Date(timeStamp * 1000);
+//   datetime.setMonth(datetime.getMonth() - 1)
 //   const year = datetime.getFullYear()
-//   const month = ('0' + (datetime.getMonth())).slice(-2);
+//   // const month = datetime.getMonth() + 1
+//   var month = ('0' + (datetime.getMonth() + 1)).slice(-2);
 //   const day = ('0' + datetime.getDate()).slice(-2);
 //   const hour = ('0' + datetime.getHours()).slice(-2);
 //   const minute = ('0' + datetime.getMinutes()).slice(-2);
@@ -97,11 +99,12 @@
 //     const userSheet = SpreadsheetApp.openByUrl(user[2])
 //     let monthSheet = userSheet.getSheetByName(`${year}.${month}`)
 //     if (!monthSheet) {
-//       const template = SpreadsheetApp.openById("1K_PSeBuE-gx5dQcayYFee9zSYSGfBfzaM90CVf7y6eU").getSheetByName("作業表雛形")
+//       const ss = SpreadsheetApp.openById("1K_PSeBuE-gx5dQcayYFee9zSYSGfBfzaM90CVf7y6eU")
+//       const template = ss.getSheetByName("作業表雛形")
 //       monthSheet = template.copyTo(userSheet).setName(`${year}.${month}`)
 //       const setMonth = year + "年" + month + "月"
-//       monthSheet.getRange(setMonthBlock).setValue(setMonth)
-//       monthSheet.getRange(setUserBlock).setValue(user[0])
+//       monthSheet.getRange("A4:D5").setValue(setMonth)
+//       monthSheet.getRange("AD2:AI2").setValue(user[0])
 //       console.log(setMonth)
 //     }
 //     monthSheet.getRange(index, columnNum + Number(day)).setValue(time)
@@ -110,19 +113,19 @@
 
 // function setRest2(index, year, month, time_1, day, user) {
 
-
+//   // 個人スプレッドシートURL
 //   const userSheet = SpreadsheetApp.openByUrl(user[2])
 //   const monthSheet = userSheet.getSheetByName(`${year}.${month}`)
 
-//   const dspTimeList = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow()).getDisplayValues().filter(String).flat()
+//   const restTimeValues = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow())
 
-//   if (!dspTimeList.includes(time_1)) {
+//   let dspTimeList = restTimeValues.getDisplayValues().filter(String).flat()
+//   const setTimeIndex = restTimeValues.getValues().filter(String).length + index
 
-//     const setTimeIndex = monthSheet.getRange(index, columnNum + Number(day), monthSheet.getLastRow()).getValues().filter(String).length + index
+//   const setVal = dspTimeList.indexOf(time_1) == -1 ? dspTimeList.push(monthSheet.getRange(setTimeIndex, columnNum + Number(day)).setValue(time_1).getDisplayValue()) : false
 
-//     monthSheet.getRange(setTimeIndex, columnNum + Number(day)).setValue(time_1)
-
-
+//   //時間をセットした場合true・計算する
+//   if (setVal) {
 //     const getIndex = setTimeIndex - index + 1
 //     const restTimeList = monthSheet.getRange(index, columnNum + Number(day), getIndex, 1).getValues()
 //     console.log(restTimeList)
