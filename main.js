@@ -47,7 +47,7 @@ function doPost(e) {
   }
   if (channel == "C0137GS99UK" && text.includes("【勤務表を提出】")) {
     /**社員一覧 */
-    const employeeList = containerSheet.getSheetByName("社員一覧_2021年度");
+    const employeeList = containerSheet.getSheetByName("社員一覧");
     const [header00, ...Values02] = employeeList.getDataRange().getValues();
 
     const employeSheet = sarchEmploye(userName, Values02)
@@ -109,7 +109,7 @@ function toKurasinoChannel(employeSheet, timeStamp, text) {
   if (employeSheet) {
 
     const userSheet = SpreadsheetApp.openByUrl(employeSheet[2])
-    let list = userSheet.getSheetByName(`${year}.${month}`)
+    let list = userSheet.getSheetByName('2022.04');
 
     const doc = DriveApp.getFileById(userSheet.getId())
     access = DriveApp.Access.PRIVATE;
