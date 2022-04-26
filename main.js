@@ -12,7 +12,7 @@ const jobEnd = 7
 const restTimeWidth = 8
 
 /**休憩 */
-const restIndex = 70
+const restIndex = 120
 
 /**シート名 */
 const user = "社員一覧"
@@ -26,11 +26,6 @@ const setUserBlock = "AE2:AJ2"
 /**スプシ */
 const containerSheet = SpreadsheetApp.getActiveSpreadsheet()
 
-/**社員一覧 */
-const employeeList = containerSheet.getSheetByName("社員一覧");
-const [header00, ...Values00] = employeeList.getDataRange().getValues();
-const rangeIndex = employeeList.getIndex()
-
 
 function doPost(e) {
   // var startTime = new Date();
@@ -41,12 +36,21 @@ function doPost(e) {
   const channel = params.event.channel
 
   const userName = sarchUserName(text);
-  const employeSheet = sarchEmploye(userName)
 
   if (channel == "C0137GRL4UT") {
+    /**社員一覧 */
+    const employeeList = containerSheet.getSheetByName("社員一覧");
+    const [header00, ...Values01] = employeeList.getDataRange().getValues();
+
+    const employeSheet = sarchEmploye(userName, Values01)
     kintaiChannel(employeSheet, timeStamp, text)
   }
   if (channel == "C0137GS99UK" && text.includes("【勤務表を提出】")) {
+    /**社員一覧 */
+    const employeeList = containerSheet.getSheetByName("社員一覧_2021年度");
+    const [header00, ...Values02] = employeeList.getDataRange().getValues();
+
+    const employeSheet = sarchEmploye(userName, Values02)
     toKurasinoChannel(employeSheet, timeStamp, text)
   }
 }
@@ -173,7 +177,7 @@ function logTime(time, month, day, text) {
 
 }
 
-function sarchEmploye(userName) {
+function sarchEmploye(userName, Values00) {
   for (const Value00 of Values00) {
     const [name00, userId00, ss] = Value00
     if (userName == userId00) {
